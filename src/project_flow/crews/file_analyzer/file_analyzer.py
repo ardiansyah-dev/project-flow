@@ -2,7 +2,7 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from crewai_tools import FileReadTool
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -11,7 +11,8 @@ class OutputTxtAnalyzer(BaseModel):
     insight: str
     indicator: str
 
-# class OutputTxtAnalyzerList:
+class OutputTxtAnalyzerList(BaseModel):
+    analyzer: list[OutputTxtAnalyzer] = Field(..., min_length=5)
 
 @CrewBase
 class FileAnalyzer():
@@ -46,6 +47,7 @@ class FileAnalyzer():
     def task_file_analyzer(self) -> Task:
         return Task(
             config=self.tasks_config['task_file_analyzer'], # type: ignore[index]
+            output_json=OutputTxtAnalyzerList
         )
 
     @crew

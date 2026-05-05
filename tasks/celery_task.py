@@ -54,7 +54,8 @@ def file_analyzer(self, file:str):
     self.update_state(state="RUNNING", meta="current:"f"start file analysis for {file}")
     try:
         result = FileAnalyzer().crew().kickoff(inputs={"file": file})
-        return str(result)
+        # return str(result)
+        return result.json_dict # type: ignore
     except Exception as e:
         logger.error(f"Task failed with error: {e}\n{traceback.format_exc()}")
         raise
