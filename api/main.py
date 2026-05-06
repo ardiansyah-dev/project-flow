@@ -66,6 +66,24 @@ async def file_analyzer(file: UploadFile=File(...)):
   task = celeryTask.file_analyzer.delay(file_path) # type: ignore
   return {"task_id": task.id, "file_path": file_path}
 
+@app.post("/anomaly-detection")
+async def anomaly_detection(file: UploadFile=File(...)):
+  if file.content_type != "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+    raise HTTPException(status_code=400,detail="File must be a XLSX")
+
+  _, file_extension = os.path.splitext(file.filename or "file")
+  file_extension = file_extension or ".xlsx"
+  unique_filename = f"{uuid.uuid4().hex}{file_extension}"
+  file_path = os.path.join(TEXT_FOLDER, unique_filename)
+
+  #  Save the file
+  content = await file.read()
+  with open(file_path, "wb") as f:
+    f.write(content)
+
+  task = celeryTask.anomaly_detection.delay(file_path) # type: ignore
+  return {"task_id": task.id, "file_path": file_path}
+
 @app.get("/status/{task_id}")
 async def get_status(task_id:str):
   task_result = AsyncResult(task_id, app=celery_app)

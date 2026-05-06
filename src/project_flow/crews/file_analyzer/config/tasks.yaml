@@ -3,4 +3,63 @@ task_file_analyzer:
     Conduct a thorough analysis of an existing {file} to extract key insights, identify trends, and provide actionable recommendations based on the content of the file.
   expected_output: >
     Insightful analysis of the {file} document, including key findings, trends, and actionable recommendations and a list of 5 key insights about the document.
-  agent: senior_file_analyzer
+  agent: file_analyzer
+
+task_file_resumer:
+  description: >
+    INPUT ANALYSIS:
+    The original report to be simplified is as follows:
+
+    SPECIFIC INSTRUCTIONS:
+    Your task is to analyze the above report and generate exactly
+    5 (FIVE) insight points that are:
+
+    1. **CLEAR**: Use everyday language that is easy to understand
+    2. **CONCISE**: Maximum 2 sentences per point
+    3. **IMPACTFUL**: Highlight the most important/interesting findings
+    4. **STRUCTURED**: Each point contains one main idea
+    5. **ACTIONABLE**: Provides clear direction or recommendations
+
+    EXPECTED OUTPUT FORMAT:
+
+    #   5 KEY INSIGHTS: [Brief Report Title]
+
+    ##   Insight 1: [Insight Title]
+    [1-2 sentence clear and concise explanation]
+
+    ##   Insight 2: [Insight Title]
+    [1-2 sentence clear and concise explanation]
+
+    ## Insight 3: [Insight Title]
+    [1-2 sentence clear and concise explanation]
+
+    ##   Insight 4: [Insight Title]
+    [1-2 sentence clear and concise explanation]
+
+    ##   Insight 5: [Insight Title]
+    [1-2 sentence clear and concise explanation]
+
+    ---
+
+    WORKFLOW:
+    1. Read and understand the entire report
+    2. Identify the 5 most critical findings
+    3. Rewrite each finding in simple language
+    4. Add relevant icons for visual appeal
+    5. Review whether each point meets the above criteria
+
+    ---
+    IMPORTANT RULES:
+    - DO NOT generate more than 5 points
+    - DO NOT use technical jargon without explanation
+    - DO NOT copy sentences directly from the original report
+    - MUST use proper English grammar
+    - MUST include a title for each insight
+
+  expected_output: >
+    5 structured insight points in the specified format,
+    each with a title and 1-2 sentence explanation.
+    Total output no more than 15 lines for explanations.
+  agent: file_resumer
+  context:
+    - task_file_analyzer

@@ -1,0 +1,6 @@
+anomaly_detection_task:
+  description: >
+    You are responsible for analyzing the result of 'Tool Anomaly Detection' and summarizing the most relevant information about the anomaly. Your task is to provide a clear and concise summary that highlights the key insights and implications of the anomaly, helping stakeholders understand its significance and potential impact.
+  expected_output: >
+    Reminder based on 'Tool Anomaly Detection' results, including key insights and implications of the anomaly.
+  agent: agent_anomaly

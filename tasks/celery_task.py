@@ -4,8 +4,10 @@ from src.project_flow.crews.analisator.analisator import Analisator
 from src.project_flow.crews.system_analyst.system_analyst import SystemAnalyst
 from src.project_flow.crews.developer_crew.developer_crew import DeveloperCrew
 from src.project_flow.crews.file_analyzer.file_analyzer import FileAnalyzer
+from src.project_flow.crews.anomaly.anomaly import Anomaly
 import logging
 import traceback
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +57,17 @@ def file_analyzer(self, file:str):
     try:
         result = FileAnalyzer().crew().kickoff(inputs={"file": file})
         # return str(result)
-        return result.json_dict # type: ignore
+        return result.to_dict() # type: ignore
+    except Exception as e:
+        logger.error(f"Task failed with error: {e}\n{traceback.format_exc()}")
+        raise
+
+@celery_app.task(bind=True, name="anomaly_detection")
+def anomaly_detection(self, file:str):
+    self.update_state(state="RUNNING", meta="current:"f"start anomaly detection for {file}")
+    try:
+        result = Anomaly().crew().kickoff(inputs={"file": file})
+        return str(result)
     except Exception as e:
         logger.error(f"Task failed with error: {e}\n{traceback.format_exc()}")
         raise
