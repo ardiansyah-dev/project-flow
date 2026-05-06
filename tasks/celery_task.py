@@ -63,10 +63,10 @@ def file_analyzer(self, file:str):
         raise
 
 @celery_app.task(bind=True, name="anomaly_detection")
-def anomaly_detection(self, file:str):
-    self.update_state(state="RUNNING", meta="current:"f"start anomaly detection for {file}")
+def anomaly_detection(self, file_name:str, file_path:str):
+    self.update_state(state="RUNNING", meta="current:"f"start anomaly detection for {file_name} at {file_path}")
     try:
-        result = Anomaly().crew().kickoff(inputs={"file": file})
+        result = Anomaly().crew().kickoff(inputs={"file_name": file_name, "file_path": file_path})
         return str(result)
     except Exception as e:
         logger.error(f"Task failed with error: {e}\n{traceback.format_exc()}")

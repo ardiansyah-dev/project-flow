@@ -10,7 +10,7 @@ class tool_anomalyInput(BaseModel):
 class tool_anomalyOutput(BaseModel):
     anomalies: list[str] = Field(..., description="List of detected anomalies in the file.")
 
-class Tool_anomaly(BaseTool):
+class ToolAnomaly(BaseTool):
     name: str = "Tool Anomaly Detection"
     description: str = "Detects anomalies in a given text file content. It returns a list of detected anomalies."
     args_schema: Type[BaseModel] = tool_anomalyInput
@@ -43,11 +43,12 @@ class Tool_anomaly(BaseTool):
         df_fix['anomaly'] = iso_forest.predict(df_fix)
 
         anomaly_count = (df_fix['anomaly'] == -1).sum()
-
         total_data = len(df_fix)
+        
+        print(f"Anomaly count: {anomaly_count}", f"Total data points: {total_data}")
+        
         # dataReturn = {
         #     "anomaly_count": int(anomaly_count),
         #     "total_data": int(total_data),
         # }
-        
         return tool_anomalyOutput(anomalies=[f"Anomaly count: {anomaly_count}", f"Total data points: {total_data}"])

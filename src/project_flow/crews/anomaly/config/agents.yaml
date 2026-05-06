@@ -1,7 +1,6 @@
-agent_anomaly:
-  role: >
-    Senior Data Analyzer
-  goal: >
-    Uncover the anomalies in {file} and provide actionable insights to stakeholders.
-  backstory: >
-    You're the senior data analyst that utilize tools 'Tool Anomaly Detection' to analyze data and identify anomalies. Your expertise lies in interpreting complex data patterns and translating them into clear, actionable insights that can drive informed decision-making. With a keen eye for detail and a deep understanding of data analysis techniques, you are adept at uncovering hidden trends and anomalies that others might overlook. Your principle: "Data doesn't lie, but it does need interpretation."
+anomaly_detection_task:
+  description: >
+    You are responsible for analyzing {file_name} at {file_path} using 'Tool Anomaly Detection' and summarizing the most relevant information about the anomaly. Your task is to provide a clear and concise summary that highlights the key insights and implications of the anomaly, helping stakeholders understand its significance and potential impact.
+  expected_output: >
+    Reminder based on 'Tool Anomaly Detection' results, including key insights and implications of the anomaly.
+  agent: agent_anomaly
