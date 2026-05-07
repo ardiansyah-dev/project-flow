@@ -1,0 +1,18 @@
+helmet_detector_task:
+  description: >
+    Perform helmet detection on the provided image. 
+    Identify the number of heads without helmets (head), the number of helmets (helmet), and the total number of people (person).
+  expected_output: >
+    A raw report of the detection counts (head, helmet, person).
+  agent: helmet_detector
+
+task_helmet_analyzer:
+  description: >
+    Retrieve the detection results from the previous task. 
+    Use the 'tool_report_database' tool to save these results. 
+    You MUST provide three separate integer arguments: 'head', 'helmet', and 'person'.
+  expected_output: >
+    A simple confirmation message stating whether the data was saved or if no violation was found.
+  agent: agent_helmet_analyzer
+  context: 
+    - helmet_detector_task

@@ -4,6 +4,7 @@ from src.project_flow.crews.analisator.analisator import Analisator
 from src.project_flow.crews.system_analyst.system_analyst import SystemAnalyst
 from src.project_flow.crews.developer_crew.developer_crew import DeveloperCrew
 from src.project_flow.crews.file_analyzer.file_analyzer import FileAnalyzer
+from src.project_flow.crews.helmet_detector.helmet_detector import HelmetDetector
 from src.project_flow.crews.anomaly.anomaly import Anomaly
 import logging
 import traceback
@@ -67,6 +68,16 @@ def anomaly_detection(self, file_name:str, file_path:str):
     self.update_state(state="RUNNING", meta="current:"f"start anomaly detection for {file_name} at {file_path}")
     try:
         result = Anomaly().crew().kickoff(inputs={"file_name": file_name, "file_path": file_path})
+        return str(result)
+    except Exception as e:
+        logger.error(f"Task failed with error: {e}\n{traceback.format_exc()}")
+        raise
+
+@celery_app.task(bind=True, name="helmet_detection")
+def helmet_detection(self, gambar:str):
+    self.update_state(state="RUNNING", meta="current:"f"start helmet detection for {gambar}")
+    try:
+        result = HelmetDetector().crew().kickoff(inputs={"gambar": gambar})
         return str(result)
     except Exception as e:
         logger.error(f"Task failed with error: {e}\n{traceback.format_exc()}")
