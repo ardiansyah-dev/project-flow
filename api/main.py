@@ -9,7 +9,11 @@ from tasks.celery_app import celery_app
 import shutil
 
 TEXT_FOLDER = "files_test" 
+EXCEL_FOLDER = "files_excel"
+IMAGE_FOLDER = "files_image"
 os.makedirs(TEXT_FOLDER, exist_ok=True)
+os.makedirs(EXCEL_FOLDER, exist_ok=True)
+os.makedirs(IMAGE_FOLDER, exist_ok=True)
 
 app = FastAPI()
 
@@ -88,6 +92,26 @@ async def anomaly_detection(file: UploadFile=File(...)):
   except Exception as e:
     raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"Failed to save the file: {str(e)}")
 
+@app.post("/helmet-detection")
+async def helmet_detection(gambar: UploadFile=File(...)):
+  if not gambar.filename or not gambar.filename.endswith(('.jpg', '.jpeg', '.png')):
+    raise HTTPException(status_code=400,detail="File must be an image (jpg, jpeg, png)")
+
+  file_extension = os.path.splitext(gambar.filename)[1] or ".jpg"
+  unique_filename = f"{uuid.uuid4().hex}{file_extension}"
+  file_path = os.path.join(TEXT_FOLDER, unique_filename)
+  absolute_file_path = os.path.abspath(file_path)
+
+  try:
+    #  Save the file
+    content = await gambar.read()
+    with open(file_path, "wb") as f:
+      f.write(content)
+
+    task = celeryTask.helmet_detection.delay(gambar=absolute_file_path) # type: ignore
+    return {"task_id": task.id, "file_path": absolute_file_path, "file_name": gambar.filename}
+  except Exception as e:
+    raise HTTPException(status_code=HTTPStatus.INTERNAL_SERVER_ERROR, detail=f"Failed to save the file: {str(e)}")
 
 @app.get("/status/{task_id}")
 async def get_status(task_id:str):
